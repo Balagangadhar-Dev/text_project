@@ -5,6 +5,7 @@ import easyocr
 from PIL import Image
 from django.shortcuts import render, redirect
 from .forms import DocumentForm
+from .models import Recent_Activity
 import fitz  # PyMuPDF for PDF processing
 
 # Function to extract text from an image using EasyOCR
@@ -28,6 +29,8 @@ def extract_text_from_pdf(pdf_path):
 
 # Function to handle file uploads and text extraction
 def upload_file(request):
+    recent = Recent_Activity()
+    recent_data = Recent_Activity.objects.all()
     if request.method == 'POST':
         form = DocumentForm(request.POST, request.FILES)
         if form.is_valid():
@@ -36,13 +39,19 @@ def upload_file(request):
 
             if file_type in ['png', 'jpg', 'jpeg']:
                 extracted_text = extract_text_from_image(document.file.path)
+                recent.u_file_type = file_type
+                recent.ext_data = extracted_text
+                recent.save()
             elif file_type == 'pdf':
                 extracted_text = extract_text_from_pdf(document.file.path)
+                recent.u_file_type = file_type
+                recent.ext_data = extracted_text
+                recent.save()
             else:
                 extracted_text = "Unsupported file format."
-
-            return render(request, 'result.html', {'text': extracted_text})
+            
+            return render(request, 'result.html', {'text': extracted_text, 'recent_data':recent_data})
     else:
         form = DocumentForm()
 
-    return render(request, 'upload.html', {'form': form})
+    return render(request, 'upload.html', {'form': form, 'recent_data':recent_data})

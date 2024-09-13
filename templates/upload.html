@@ -17,5 +17,33 @@
     </form>
 </div>
 
+
+<div class="m-5">
+    <h3>Recent Activity</h3>
+    <hr>
+    <table class="table table-striped-columns">
+        <thead>
+          <tr>
+            <th scope="col">Id</th>
+            <th scope="col">Date and Time</th>
+            <th scope="col">File Type</th>
+            <th scope="col">Data Extracted</th>
+          </tr>
+        </thead>
+        <tbody class="table-group-divider">
+            {% for data in recent_data %}
+          <tr>
+            <th scope="row">{{data.id}}</th>
+            <td>{{data.uploaded_at}}</td>
+            <td>{{data.u_file_type}}</td>
+            <td>{{data.ext_data}}</td>
+          </tr>
+          {% endfor %}
+
+        </tbody>
+      </table>
+
+</div>
+
 </body>
 </html>
